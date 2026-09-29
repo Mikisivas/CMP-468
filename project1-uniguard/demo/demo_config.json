@@ -1,0 +1,36 @@
+{
+  "institution": "Federal University of Technology (Demo)",
+  "source": "sandbox/university_data",
+  "repository": "sandbox/backups/primary",
+  "state_dir": "sandbox/state",
+  "quarantine_dir": "sandbox/quarantine",
+  "offsite": {
+    "path": "sandbox/backups/offsite_partner_campus",
+    "window": {"start": "00:00", "end": "23:59"},
+    "max_mb_per_run": 50
+  },
+  "intervals": {"monitor_s": 3, "backup_s": 120, "peak_backup_s": 60},
+  "peak_periods": [
+    {"label": "Second semester exams and result upload", "start": "2026-01-01T00:00", "end": "2030-12-31T23:59"}
+  ],
+  "retention": {"keep_last": 10, "keep_daily": 14, "keep_weekly": 8, "keep_monthly": 12},
+  "services": [
+    {"name": "Student Portal", "type": "http", "target": "http://127.0.0.1:8099/"},
+    {"name": "Result Processing DB", "type": "tcp", "target": "127.0.0.1:8099"}
+  ],
+  "power": {"source": "file", "status_file": "sandbox/ups_status.txt",
+            "emergency_backup_below_percent": 60, "critical_below_percent": 25},
+  "protected_paths": [
+    {"path": "registry/results", "label": "Senate-approved results",
+     "allowed_windows": [{"start": "2025-01-10T08:00", "end": "2025-01-20T18:00"}]}
+  ],
+  "integrity": {"mass_change_ratio": 0.2, "mass_change_min_files": 5, "entropy_threshold": 7.2},
+  "auto_recover": true,
+  "alerts": [
+    {"type": "console", "min_severity": "info"},
+    {"type": "outbox", "path": "sandbox/sms_outbox.jsonl", "min_severity": "warning"}
+  ],
+  "alert_cooldown_s": 300,
+  "passphrase_env": "UNIGUARD_PASSPHRASE",
+  "dashboard": {"host": "127.0.0.1", "port": 8080, "password_env": "UNIGUARD_DASHBOARD_PASSWORD"}
+}
