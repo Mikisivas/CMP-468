@@ -39,13 +39,9 @@ python demo/run_demo.py --fast
 
 Terminal 1:
 ```
-export AGROPEACE_MASTER_KEY="demo-master-key-CMP468-agropeace"
-export AGROPEACE_USSD_TOKEN="ussd-demo-token-468"
-python -m agropeace -c demo/demo_config.json run
+python demo/live.py --fresh
 ```
-Windows PowerShell: `$env:AGROPEACE_MASTER_KEY="..."`.
-
-Open http://127.0.0.1:8090. The public view shows coarse data only. Sign in as:
+Open http://127.0.0.1:8090. The public view shows community risk only. Sign in as:
 
 | User | Password | Role |
 |---|---|---|
@@ -53,16 +49,19 @@ Open http://127.0.0.1:8090. The public view shows coarse data only. Sign in as:
 | guma_mediator | guma-mediator-2026 | Guma LGA only |
 | protection | protect-2026 | may reveal an informant, always audited |
 
-Terminal 2 (same two environment variables):
+Terminal 2:
 ```
-python demo/simulator.py
+python demo/simulator.py          # add --fast for a 30-second run
 ```
 
 Watch H1 get an early warning, enter a farm, and open a case. Use the USSD
-phone panel to dial `*347*468#` and file a report.
+phone panel to dial `*347*468#` and file a report. Jump to Yelwata with
+http://127.0.0.1:8090/#7.86,8.81,11.25
 
 The map uses OpenStreetMap tiles when online. Offline, the farms, reserves,
 routes, river and risk grid still draw because Leaflet is bundled.
+
+Full walkthrough: [../SETUP_GUIDE.md](../SETUP_GUIDE.md).
 
 ## Tests
 

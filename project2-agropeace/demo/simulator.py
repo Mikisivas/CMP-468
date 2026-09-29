@@ -8,7 +8,8 @@ Scenario:
       route trigger an early warning, a common real-world problem
   H4  Logo: drifts toward farms near Ugba (approach warning)
 
-    python demo/simulator.py            # posts to the running server
+    python demo/simulator.py            # posts to the running server, one fix every 2 s
+    python demo/simulator.py --fast     # one fix every 0.5 s
 """
 
 import json
@@ -93,6 +94,9 @@ def post(url, body, sig):
 
 
 def main():
+    os.environ.setdefault("AGROPEACE_MASTER_KEY", "demo-master-key-CMP468-agropeace")  # same demo key as live.py
+    if "--fast" in sys.argv:
+        os.environ["SIM_INTERVAL"] = "0.5"
     cfg = load_config(HERE / "demo_config.json")
     master = master_key_from_env(cfg)
     layers = MapLayers.load(cfg["layers"])

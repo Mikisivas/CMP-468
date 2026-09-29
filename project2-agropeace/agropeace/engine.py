@@ -32,7 +32,7 @@ REPORT_LEVEL = {  # (type, status) -> case level
 
 def load_config(path) -> dict:
     path = Path(path).resolve()
-    cfg = json.loads(path.read_text())
+    cfg = json.loads(path.read_text(encoding="utf-8"))
     base = path.parent
     for k in ("layers", "incidents", "state_dir"):
         cfg[k] = str((base / cfg[k]).resolve())
@@ -58,7 +58,7 @@ class Engine:
         state = Path(cfg["state_dir"])
         state.mkdir(parents=True, exist_ok=True)
         self.layers = MapLayers.load(cfg["layers"])
-        self.history = json.loads(Path(cfg["incidents"]).read_text())
+        self.history = json.loads(Path(cfg["incidents"]).read_text(encoding="utf-8"))
         self.risk = RiskModel(self.layers, cfg.get("cell_deg", 0.025))
         self.vault = IdentityVault(master)
         self.audit = AuditChain(state / "audit.db")

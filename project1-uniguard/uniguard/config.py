@@ -28,7 +28,7 @@ PATH_KEYS = ["source", "repository", "state_dir", "quarantine_dir"]
 
 def load_config(path) -> dict:
     path = Path(path).resolve()
-    raw = json.loads(path.read_text())
+    raw = json.loads(path.read_text(encoding="utf-8"))
     cfg = {**DEFAULTS, **raw}
     for k in ("intervals", "retention", "power", "thresholds", "dashboard"):
         cfg[k] = {**DEFAULTS[k], **raw.get(k, {})}

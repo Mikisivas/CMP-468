@@ -38,33 +38,24 @@ python demo/run_demo.py --fast
 
 ## Live demo with the dashboard (for the presentation)
 
-Terminal 1:
+Terminal 1 (one command sets up demo data, the encrypted repository and a
+stand-in Student Portal, then opens the dashboard; password `cmp468`):
 ```
-python demo/seed_data.py
-export UNIGUARD_PASSPHRASE="demo-passphrase-CMP468-2026"
-export UNIGUARD_DASHBOARD_PASSWORD="cmp468"
-python -m uniguard -c demo/demo_config.json init
-python -m uniguard -c demo/demo_config.json run --dashboard
-```
-On Windows PowerShell use `$env:UNIGUARD_PASSPHRASE="..."` instead of `export`.
-
-Terminal 2:
-```
-python demo/fake_portal.py
+python demo/live.py --fresh
 ```
 
-Open http://127.0.0.1:8080 and log in with `cmp468`. Then, from terminal 3:
-
+Terminal 2, one incident at a time:
 ```
-python demo/simulate_incident.py power-off     # NEPA takes light
+python demo/simulate_incident.py power-off      # grid fails, inverter takes over
 python demo/simulate_incident.py battery-low
 python demo/simulate_incident.py power-on
-# press Ctrl+C in terminal 2 to take the Student Portal down
-python demo/simulate_incident.py tamper        # insider changes a grade
-python demo/simulate_incident.py ransomware    # watch it recover in seconds
+python demo/simulate_incident.py portal-down    # Student Portal answers HTTP 503
+python demo/simulate_incident.py portal-up
+python demo/simulate_incident.py tamper         # insider changes a grade
+python demo/simulate_incident.py ransomware     # watch it recover in seconds
 ```
 
-To start over, delete `demo/sandbox`.
+Full walkthrough: [../SETUP_GUIDE.md](../SETUP_GUIDE.md).
 
 ## Tests
 

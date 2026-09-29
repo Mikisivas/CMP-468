@@ -21,11 +21,13 @@ report it asks to update fields; say yes so the table of contents fills in.
 
 ## Running
 
-Each project folder has its own README. In short:
+Step-by-step instructions for your own computer (Windows, macOS, Linux) are in
+[SETUP_GUIDE.md](SETUP_GUIDE.md), with a printable copy in `SETUP_GUIDE.docx`.
+Each project folder also has its own README. In short:
 
 ```
-cd project1-uniguard && pip install -r requirements.txt && python -m pytest -q && python demo/run_demo.py
-cd project2-agropeace && pip install -r requirements.txt && python -m pytest -q && python demo/run_demo.py
+cd project1-uniguard && pip install -r requirements.txt && python -m pytest -q && python demo/live.py --fresh
+cd project2-agropeace && pip install -r requirements.txt && python -m pytest -q && python demo/live.py --fresh
 ```
 
 ## Rebuilding the documents

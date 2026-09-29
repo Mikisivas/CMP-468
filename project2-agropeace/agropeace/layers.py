@@ -25,7 +25,7 @@ class MapLayers:
 
     @classmethod
     def load(cls, path) -> "MapLayers":
-        return cls(json.loads(Path(path).read_text()))
+        return cls(json.loads(Path(path).read_text(encoding="utf-8")))
 
     # ---------------------------------------------------------------- queries
     def farm_at(self, lat, lon):

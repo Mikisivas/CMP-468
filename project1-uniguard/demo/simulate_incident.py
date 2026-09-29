@@ -8,6 +8,8 @@ marker file) and it never touches anything else.
     python demo/simulate_incident.py power-off    # grid goes off, inverter takes over
     python demo/simulate_incident.py battery-low  # inverter battery nearly flat
     python demo/simulate_incident.py power-on     # grid restored
+    python demo/simulate_incident.py portal-down  # Student Portal answers HTTP 503
+    python demo/simulate_incident.py portal-up    # Student Portal back to normal
 """
 
 import csv
@@ -60,12 +62,24 @@ def power(state: str) -> None:
     print(f"[simulation] UPS status now: {state}")
 
 
+def portal(down: bool) -> None:
+    flag = SANDBOX / "portal_down"
+    SANDBOX.mkdir(exist_ok=True)
+    if down:
+        flag.write_text("down\n")
+    else:
+        flag.unlink(missing_ok=True)
+    print(f"[simulation] Student Portal is now {'DOWN (HTTP 503)' if down else 'UP'}")
+
+
 ACTIONS = {
     "ransomware": ransomware,
     "tamper": tamper,
     "power-off": lambda: power("BATTERY 78"),
     "battery-low": lambda: power("BATTERY 20"),
     "power-on": lambda: power("MAINS 100"),
+    "portal-down": lambda: portal(True),
+    "portal-up": lambda: portal(False),
 }
 
 if __name__ == "__main__":
