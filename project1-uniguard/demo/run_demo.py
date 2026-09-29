@@ -16,9 +16,12 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE))
 
+import json  # noqa: E402
+
 import fake_portal  # noqa: E402
 import seed_data  # noqa: E402
 import simulate_incident  # noqa: E402
+from uniguard.backup import restore_snapshot  # noqa: E402
 from uniguard.config import load_config  # noqa: E402
 from uniguard.engine import UniGuard  # noqa: E402
 from uniguard.repository import Repository  # noqa: E402
@@ -77,12 +80,9 @@ def main() -> None:
     scene("5. An insider changes a student's CMP468 grade after Senate approval")
     simulate_incident.tamper()
     eng.monitor_tick()
-    for rel in list(eng.integrity.scan()["modified"]):
-        pass
     eng.run_backup(tag="scheduled")
     print("Backup taken while tampering is open is marked SUSPECT, so recovery never uses it.")
     base = eng.repo.latest_snapshot(clean_only=True)
-    from uniguard.backup import restore_snapshot
     r = restore_snapshot(eng.repo, base["id"], cfg["source"], ["registry/results"])
     print(f"Registrar restores the approved results from the last clean snapshot: {r['restored']} files verified.")
     eng.open_tamper.clear()
@@ -107,7 +107,6 @@ def main() -> None:
     print("After an insider edits the log:", eng.audit.verify_chain())
     print(f"\nSMS alerts that would have gone to the ICT Director: {HERE / 'sandbox' / 'sms_outbox.jsonl'}")
     for line in open(HERE / "sandbox" / "sms_outbox.jsonl"):
-        import json
         print("  SMS:", json.loads(line)["sms"])
 
 

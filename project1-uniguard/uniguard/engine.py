@@ -121,7 +121,7 @@ class UniGuard:
 
     def _check_host(self) -> None:
         th = self.cfg["thresholds"]
-        disks = [str(self.source), self.cfg["repository"]]
+        disks = {"Data disk": str(self.source), "Backup disk": self.cfg["repository"]}
         metrics, findings = check_host(disks, th["cpu"], th["memory"], th["disk"])
         self.host = metrics
         for k, v in metrics.items():
@@ -285,6 +285,7 @@ class UniGuard:
         return {
             "institution": self.cfg["institution"],
             "lockdown": self.lockdown,
+            "open_tamper_alerts": len(self.open_tamper),
             "peak_period": self.in_peak_period(),
             "backup_interval_s": self.backup_interval(),
             "host": self.host,

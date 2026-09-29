@@ -1,0 +1,4 @@
+cryptography>=41
+psutil>=5.9
+flask>=3.0
+pytest>=7

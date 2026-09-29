@@ -9,7 +9,6 @@ Security controls:
 """
 
 import hmac
-import os
 import secrets
 import threading
 import time
@@ -30,7 +29,8 @@ header h1{margin:0;font-size:18px}header small{opacity:.85}
 main{padding:16px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));max-width:1400px;margin:auto}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
 .card h2{margin:0 0 10px;font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-.wide{grid-column:1/-1}.big{font-size:26px;font-weight:700}
+.wide{grid-column:1/-1}.half{grid-column:span 2}@media (max-width:700px){.half{grid-column:1/-1}}
+td{overflow-wrap:break-word;word-break:break-word}.pill,td.muted:first-child{white-space:nowrap}.big{font-size:26px;font-weight:700}
 .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;color:#fff}
 .ok{background:var(--ok)}.warning{background:var(--warn)}.critical,.bad{background:var(--bad)}.info{background:#3b6ea5}
 table{width:100%;border-collapse:collapse}td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
@@ -51,8 +51,8 @@ button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8p
   <button onclick="act('sync')">Sync offsite now</button><div id="actres" class="muted"></div></div>
  <div class="card wide"><h2>Campus services</h2><table id="svc"></table></div>
  <div class="card wide"><h2>Incidents</h2><table id="inc"></table></div>
- <div class="card"><h2>Snapshots</h2><div class="scroll"><table id="snaps"></table></div></div>
- <div class="card"><h2>Audit trail</h2><div id="chain"></div><div class="scroll"><table id="events"></table></div></div>
+ <div class="card half"><h2>Snapshots</h2><div class="scroll"><table id="snaps"></table></div></div>
+ <div class="card half"><h2>Audit trail</h2><div id="chain"></div><div class="scroll"><table id="events"></table></div></div>
 </main>
 <script>
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -66,16 +66,19 @@ async function load(){
  const s=await r.json();
  inst.textContent=s.institution;updated.textContent='Updated '+new Date().toLocaleTimeString();
  const openInc=s.incidents.find(i=>i.status!=='recovered');
- banner.style.display=s.lockdown||openInc?'block':'none';
- banner.textContent=s.lockdown?'LOCKDOWN: ransomware response in progress. Backups frozen.':(openInc?'Incident '+openInc.id+' needs attention':'');
+ const tam=s.open_tamper_alerts>0;
+ banner.style.display=s.lockdown||openInc||tam?'block':'none';
+ banner.textContent=s.lockdown?'LOCKDOWN: ransomware response in progress. Backups frozen.':
+  (openInc?'Incident '+openInc.id+' needs attention':
+  (tam?'RECORDS ALERT: Senate-approved results changed outside the approved window. New backups are marked SUSPECT.':''));
  const age=s.latest_backup_age_h;
- prot.innerHTML=s.lockdown?pill('LOCKDOWN','bad'):pill('PROTECTED','ok');
+ prot.innerHTML=s.lockdown?pill('LOCKDOWN','bad'):(tam?pill('RECORDS ALERT','bad'):pill('PROTECTED','ok'));
  protd.innerHTML=`${s.snapshot_count} snapshots &middot; last ${age==null?'never':(age*60).toFixed(1)+' min ago'}<br>
   Backup every ${Math.round(s.backup_interval_s/60)} min ${s.peak_period?'('+esc(s.peak_period)+')':''}<br>
   Repository ${s.repo_size_mb} MB &middot; Offsite: ${s.offsite?esc(s.offsite.at)+' '+(s.offsite.complete?'complete':'partial'):'pending'}`;
  const p=s.power;power.innerHTML=p.on_mains==null?pill('UNKNOWN','info'):(p.on_mains?pill('MAINS','ok'):pill('ON BATTERY','warning'));
  powerd.textContent=p.battery_percent!=null?`Battery ${p.battery_percent}% (source: ${p.source})`:'No UPS data';
- const h=s.host;host.innerHTML=Object.entries(h).map(([k,v])=>`${esc(k)}: <b>${v}%</b>`).join('<br>');
+ const h=s.host;host.innerHTML=Object.entries(h).map(([k,v])=>`${esc(k)}: <b>${Math.round(v)}%</b>`).join('<br>');
  svc.innerHTML='<tr><th>Service</th><th>Status</th><th>Latency</th><th>Detail</th></tr>'+s.services.map(x=>
   `<tr><td>${esc(x.name)}</td><td>${x.up?pill('UP','ok'):pill('DOWN','bad')}</td><td>${x.up?x.latency_ms+' ms':'-'}</td><td class="muted">${esc(x.detail)}</td></tr>`).join('');
  inc.innerHTML='<tr><th>ID</th><th>Status</th><th>Restored</th><th>Quarantined</th><th>Recovery time</th><th>Why</th></tr>'+(s.incidents.length?s.incidents.map(i=>
@@ -83,7 +86,7 @@ async function load(){
  snaps.innerHTML='<tr><th>Time</th><th>Tag</th><th>Files</th><th>Stored</th></tr>'+s.snapshots.map(x=>
   `<tr><td>${t(x.created)}</td><td>${pill(x.tag,x.clean?'ok':'warning')}</td><td>${x.stats.files}</td><td>${(x.stats.bytes_stored/1024).toFixed(1)} KiB</td></tr>`).join('');
  chain.innerHTML=s.audit_chain.ok?pill('Audit chain intact ('+s.audit_chain.events+' events)','ok'):pill('AUDIT LOG TAMPERED at #'+s.audit_chain.broken_at,'bad');
- events.innerHTML=s.events.map(e=>`<tr><td class="muted">${new Date(e.ts).toLocaleTimeString()}</td><td>${pill(e.severity,e.severity)}</td><td>${esc(e.message)}</td></tr>`).join('');
+ events.innerHTML=s.events.map(e=>`<tr><td class="muted" style="white-space:nowrap">${new Date(e.ts).toLocaleTimeString()}</td><td>${pill(e.severity,e.severity)}</td><td>${esc(e.message)}</td></tr>`).join('');
 }
 load();setInterval(load,3000);
 </script></body></html>"""

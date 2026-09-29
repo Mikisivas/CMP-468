@@ -31,23 +31,24 @@ class Finding:
 
 # ---------------------------------------------------------------- server health
 
-def check_host(disk_paths, cpu_warn=90, mem_warn=90, disk_warn=85) -> tuple[dict, list[Finding]]:
+def check_host(disks: dict, cpu_warn=90, mem_warn=90, disk_warn=85) -> tuple[dict, list[Finding]]:
+    """disks maps a label ("data disk") to a path. Returns percentages keyed by label."""
     metrics, findings = {}, []
     if psutil:
-        metrics["cpu_percent"] = psutil.cpu_percent(interval=0.2)
-        metrics["mem_percent"] = psutil.virtual_memory().percent
-    for p in disk_paths:
+        metrics["CPU"] = psutil.cpu_percent(interval=0.2)
+        metrics["Memory"] = psutil.virtual_memory().percent
+    for label, p in disks.items():
         usage = shutil.disk_usage(p)
         pct = round(usage.used / usage.total * 100, 1)
-        metrics[f"disk_percent:{p}"] = pct
+        metrics[label] = pct
         if pct >= disk_warn:
             findings.append(Finding("disk", "critical" if pct >= 95 else "warning",
-                                    f"Disk {p} is {pct}% full. Backups will fail when it fills.",
+                                    f"{label} ({p}) is {pct}% full. Backups will fail when it fills.",
                                     {"path": p, "percent": pct}))
-    if metrics.get("cpu_percent", 0) >= cpu_warn:
-        findings.append(Finding("cpu", "warning", f"CPU at {metrics['cpu_percent']}%"))
-    if metrics.get("mem_percent", 0) >= mem_warn:
-        findings.append(Finding("memory", "warning", f"Memory at {metrics['mem_percent']}%"))
+    if metrics.get("CPU", 0) >= cpu_warn:
+        findings.append(Finding("cpu", "warning", f"CPU at {metrics['CPU']}%"))
+    if metrics.get("Memory", 0) >= mem_warn:
+        findings.append(Finding("memory", "warning", f"Memory at {metrics['Memory']}%"))
     return metrics, findings
 
 
