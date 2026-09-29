@@ -1,0 +1,38 @@
+{
+  "region": "Benue State, Nigeria (demonstration data)",
+  "layers": "../data/benue_layers.geojson",
+  "incidents": "../data/incidents_history.json",
+  "state_dir": "sandbox",
+  "master_key_env": "AGROPEACE_MASTER_KEY",
+  "cell_deg": 0.025,
+  "replay_window_s": 120,
+  "reports_per_hour": 3,
+  "ussd_token_env": "AGROPEACE_USSD_TOKEN",
+  "devices": {
+    "COLLAR-01": {"herd_id": "H1", "size": 140, "owner_phone": "+2348030000101", "language": "ha"},
+    "COLLAR-02": {"herd_id": "H2", "size": 90, "owner_phone": "+2348030000102", "language": "ha"},
+    "COLLAR-03": {"herd_id": "H3", "size": 120, "owner_phone": "+2348030000103", "language": "pcm"},
+    "COLLAR-04": {"herd_id": "H4", "size": 70, "owner_phone": "+2348030000104", "language": "ha"}
+  },
+  "responders": [
+    {"id": "PC-GUMA", "name": "Guma Peace Committee", "role": "peace_committee", "lga": "Guma", "phone": "+2348060000201", "language": "en"},
+    {"id": "HA-GUMA", "name": "Herders Association (Guma liaison)", "role": "herder_association", "lga": "Guma", "phone": "+2348060000202", "language": "ha"},
+    {"id": "FA-GUMA", "name": "Farmers Association (Guma)", "role": "farmer_association", "lga": "Guma", "phone": "+2348060000203", "language": "en"},
+    {"id": "PC-AGATU", "name": "Agatu Peace Committee", "role": "peace_committee", "lga": "Agatu", "phone": "+2348060000211", "language": "en"},
+    {"id": "HA-AGATU", "name": "Herders Association (Agatu liaison)", "role": "herder_association", "lga": "Agatu", "phone": "+2348060000212", "language": "ha"},
+    {"id": "FA-AGATU", "name": "Farmers Association (Agatu)", "role": "farmer_association", "lga": "Agatu", "phone": "+2348060000213", "language": "en"},
+    {"id": "PC-LOGO", "name": "Logo Peace Committee", "role": "peace_committee", "lga": "Logo", "phone": "+2348060000221", "language": "en"},
+    {"id": "HA-LOGO", "name": "Herders Association (Logo liaison)", "role": "herder_association", "lga": "Logo", "phone": "+2348060000222", "language": "ha"},
+    {"id": "AGRO-BENUE", "name": "NSCDC Agro Rangers (Benue command)", "role": "agro_rangers", "lga": "*", "phone": "+2348060000299", "language": "en"},
+    {"id": "SEC-GUMA", "name": "Guma LGA Security Council", "role": "lga_security", "lga": "Guma", "phone": "+2348060000231", "language": "en"}
+  ],
+  "users": [
+    {"username": "coordinator", "role": "coordinator", "lgas": ["*"],
+     "password_hash": "scrypt:32768:8:1$RcYgVAs7yyXZfxcN$3fd470616e8dd713a0e8a191e13d6aa7f0e94145c4bd13adcd7cdc3338dce089f4b5f486b4ac4f535a145ba43fd8e037c7576dc7b9bc19da3682de78b350ef35"},
+    {"username": "guma_mediator", "role": "mediator", "lgas": ["Guma"],
+     "password_hash": "scrypt:32768:8:1$X1ithYNLLyQaNxk7$01ef2276ce1358fcbb6ec8bbca13fcebf509d79433f9df7b69a60b963cceeb9cbdfc8ca817ee3969522bcc26a796edb7c1bd104b227cbee749150f6b3de75c33"},
+    {"username": "protection", "role": "protection_officer", "lgas": ["*"],
+     "password_hash": "scrypt:32768:8:1$5h1A2ZgbZoVrsF3R$d815d54981ef81ba4c9209e52a49f83adc2f224709a359cd7c14b634328f0d9e31a5c4bf19d7188e47f034738fa0dd5a35a02452694ccae81df045a04e52f1dc"}
+  ],
+  "dashboard": {"host": "127.0.0.1", "port": 8090}
+}

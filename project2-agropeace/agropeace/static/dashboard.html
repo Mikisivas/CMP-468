@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgroPeace Early Warning</title>
+<link rel="stylesheet" href="/static/leaflet/leaflet.css">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <div><h1>AgroPeace</h1><small id="sub">Farmer/herder early warning &middot; Benue State</small></div>
+  <div id="who"></div>
+</header>
+<div id="wrap">
+  <div id="map"></div>
+  <aside id="panel">
+    <section id="loginBox" class="card">
+      <h2>Staff sign in</h2>
+      <p class="muted">Public view shows coarse, verified information only.</p>
+      <input id="u" placeholder="Username" autocomplete="username">
+      <input id="p" type="password" placeholder="Password" autocomplete="current-password">
+      <button id="loginBtn">Sign in</button><div id="loginErr" class="err"></div>
+    </section>
+    <section class="card">
+      <h2>Community risk</h2>
+      <div class="legend"><span class="lv low">low</span><span class="lv elevated">elevated</span><span class="lv high">high</span><span class="lv severe">severe</span></div>
+      <table id="comm"></table>
+    </section>
+    <section class="card staff">
+      <h2>Open cases</h2><div id="cases"></div>
+    </section>
+    <section class="card">
+      <h2>Community reports</h2><div id="reports"></div>
+    </section>
+    <section class="card">
+      <h2>Send a report</h2>
+      <select id="rType"></select>
+      <select id="rComm"></select>
+      <input id="rPhone" placeholder="Your phone (encrypted, never shown)">
+      <input id="rText" placeholder="What did you see? (optional)" maxlength="280">
+      <button id="rSend">Send report</button><div id="rMsg" class="muted"></div>
+    </section>
+    <section class="card staff">
+      <h2>USSD phone (*347*468#)</h2>
+      <div id="phone"><pre id="screen">Dial to start</pre>
+        <div class="row"><input id="ussdIn" placeholder="Reply"><button id="ussdSend">Send</button></div>
+        <div class="row"><button id="ussdDial" class="ghost">Dial *347*468#</button><button id="ussdEnd" class="ghost">End</button></div>
+      </div>
+    </section>
+    <section class="card staff">
+      <h2>Security</h2><div id="sec"></div><div id="audit"></div>
+    </section>
+  </aside>
+</div>
+<script src="/static/leaflet/leaflet.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
