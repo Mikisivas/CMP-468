@@ -248,12 +248,21 @@ def test_ussd_full_flow(eng):
     assert risk.startswith("END Risk at")
 
 
-def test_public_view_is_coarse(eng):
-    drive(eng, "COLLAR-01", plan_paths(eng.layers)["COLLAR-01"][:4])
-    pub = eng.snapshot(None)["herds"][0]
-    staff = eng.snapshot({"username": "c", "role": "coordinator", "lgas": ["*"]})["herds"][0]
-    assert "forecast" not in pub and "forecast" in staff
-    assert (pub["lat"], pub["lon"]) != (staff["lat"], staff["lon"])
+def test_public_view_hides_herds(eng):
+    drive(eng, "COLLAR-01", plan_paths(eng.layers)["COLLAR-01"])
+    pub = eng.snapshot(None)
+    staff = eng.snapshot({"username": "c", "role": "coordinator", "lgas": ["*"]})
+    assert pub["herds"] == [] and pub["cases"] == [] and pub["security"] is None
+    assert staff["herds"] and "forecast" in staff["herds"][0]
+    assert pub["communities"]  # risk levels stay public
+
+
+def test_coarse_location_helper():
+    from agropeace.tracking import Herd
+    h = Herd("X", {"herd_id": "H9"})
+    h.lat, h.lon = 7.8123, 8.7456
+    assert "forecast" not in h.public(precise=False)
+    assert (h.public(False)["lat"], h.public(False)["lon"]) == (7.825, 8.725)
 
 
 def test_mediator_sees_only_own_lga(eng):

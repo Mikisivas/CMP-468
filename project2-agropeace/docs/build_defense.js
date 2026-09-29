@@ -1,0 +1,107 @@
+// Builds AgroPeace_Defense_QA.docx: likely panel questions, model answers and a demo runbook.
+const path = require("path");
+const { buildDefense } = require("../../tools/defensekit");
+
+const QA = [
+  ["Overview", [
+    ["In one sentence, what does AgroPeace do?",
+      "It watches herd movements, farm locations, seasons, past incidents and community reports on a map, warns herders before their cattle reach crops, sends trusted alerts to the right peace committee or security unit, and keeps warnings honest and informants safe."],
+    ["Why is this a computer security project and not just a GIS project?",
+      "Because in this system bad information can kill. A forged GPS message or a fake attack report can start a reprisal. A leaked phone number can get an informant targeted. A public map of herds can guide an attack. Most of the design effort went into integrity of data, confidentiality of informants, least-privilege access and accountability."],
+    ["Why Benue State?",
+      "Benue is one of the states worst affected by farmer/herder violence, especially Guma, Agatu and Logo LGAs, and it passed the 2017 Open Grazing Prohibition Law, so the conflict and the policy response are both well documented. The design works for any state once its map layers are loaded."],
+  ]],
+  ["GIS and risk model", [
+    ["Why write your own GIS functions instead of using QGIS or PostGIS?",
+      "So the system installs on any laptop with just Python, without GDAL or a database server. At state scale, haversine distance and ray-casting point-in-polygon are accurate enough; a test checks that one degree of latitude comes out at 111.2 km. For a national rollout I would move to PostGIS with a spatial index."],
+    ["Explain the risk formula.",
+      "Risk = 0.30 x incident history + 0.30 x herds near crops + 0.15 x crops in the field + 0.10 x dry-season water stress + 0.15 x trusted reports. Each factor is scaled 0 to 1. Incident history uses kernel density: nearby, recent and severe incidents count more. Herds near crops multiplies herd pressure by crop exposure, because cattle beside crops in the field is the most direct trigger."],
+    ["Where did the weights come from?",
+      "They are expert-set starting values based on the literature, which names crop damage and competition for water as the main triggers. They have not been fitted to data yet. In deployment I would calibrate them against ACLED incident records for Benue, testing which weights best predict where incidents actually happened."],
+    ["What is kernel density estimation?",
+      "It turns scattered incident points into a smooth surface. Each incident spreads a bell-shaped weight around its location (sigma 3 km here), and the weights add up. Areas with many nearby incidents score high. I also decay each incident's weight with age, halving roughly every three weeks."],
+    ["Why is the risk model explainable, and why does that matter?",
+      "Every score lists its top drivers, for example 'past incidents nearby, herds close to crops'. A peace committee will not act on a number it cannot understand, and a herder association will not accept being flagged by a black box. Explainability builds the trust the system depends on."],
+    ["How does the forecast work?",
+      "Dead reckoning. From the last two fixes I compute speed (smoothed, capped at 6 km/h) and heading, then project the position 1, 2 and 3 hours ahead. If a projected point falls inside farmland during crop season, the herder gets an early warning. It is a straight-line forecast; route-aware forecasting along paths and around rivers is future work."],
+  ]],
+  ["Security", [
+    ["How do you stop someone faking a herd's GPS position?",
+      "Each collar has its own key. Every message is signed with HMAC-SHA256 over a canonical JSON body. The server recomputes the signature and compares in constant time. Without the key, an attacker cannot produce a valid signature. The demo shows a forged message rejected."],
+    ["What stops an attacker from recording a real message and sending it again later?",
+      "Two checks. The timestamp must be within 120 seconds of server time, so old messages fail. Each message has a random nonce, and the server remembers nonces it has seen within the window, so an immediate replay also fails."],
+    ["Why HMAC and not digital signatures?",
+      "HMAC is fast and simple for small devices and the server already holds each device's key. Digital signatures (for example Ed25519) would mean a stolen server key could not be used to forge collar messages, so they are the better choice for production collars. I note that as an upgrade."],
+    ["How are informants protected?",
+      "Their phone numbers are encrypted with AES-256-GCM before storage, under a key derived with HKDF. Records and logs carry only a pseudonym, an HMAC of the number under a separate key, so the pseudonym cannot be reversed. Only the protection officer can decrypt a number, only with a written reason, and every attempt, allowed or denied, goes into the audit log."],
+    ["Why use a pseudonym at all? Why not delete the number?",
+      "The pseudonym lets the system recognise the same reporter again for corroboration, reputation and rate limiting without knowing who they are. The encrypted number is kept only so mediators can follow up or protect the reporter in an emergency."],
+    ["Why can't the public see herd positions?",
+      "A public map showing a herd inside a farm could guide an attack on the herders, which is exactly the reprisal the system is meant to prevent. The public sees community risk levels only. Staff see precise positions, and mediators only in their own LGA."],
+    ["What is least privilege here?",
+      "Every role sees and does only what it needs. The public sees risk. A Guma mediator sees Guma cases only. The coordinator sees all LGAs but cannot unmask informants. Only the protection officer can, and that is audited. Tests check each of these."],
+    ["How is the web dashboard protected?",
+      "Passwords are stored as scrypt hashes. Login locks for five minutes after five failures. Session cookies are HttpOnly and SameSite=Strict. Every action needs a CSRF header. The Content Security Policy blocks inline scripts, and all server text is escaped before display, which stops stored XSS through report text."],
+    ["USSD gateways don't sign their callbacks. How do you stop fake USSD requests?",
+      "The callback URL contains a long secret token that only the gateway knows. Requests to any other path get 404. In production I would also restrict the endpoint to the gateway's IP addresses."],
+  ]],
+  ["Reports and rumours", [
+    ["How do you stop the system spreading rumours?",
+      "Every report gets a trust score from its channel, independent corroboration, GPS confirmation and the reporter's track record. Below 0.45 it is unverified: coordinators see it, but it is never broadcast, never public and never triggers security. In the demo a single anonymous 'they are coming tonight' stayed at 0.30 and went nowhere."],
+    ["Couldn't a group of people coordinate false reports to fake corroboration?",
+      "It raises trust to probable, which sends it to mediators to check, not to security. Reaching verified needs more, such as GPS confirmation or a mediator's own report. Rate limits cap each number at three reports an hour, and reporters caught lying lose reputation. It is not perfect, and a human check on the ground stays in the loop."],
+    ["Why USSD?",
+      "It works on the cheapest phone, needs no data or smartphone, and people already know it from mobile banking. The location comes from choosing the LGA and community in the menu, so no GPS is needed."],
+  ]],
+  ["Response and the Nigerian context", [
+    ["Who gets alerted, and in what order?",
+      "Advisory: the herder and the herder association. Warning: add the peace committee and farmers association. Critical: add the NSCDC Agro Rangers and LGA security council. Mediation comes before force, which follows the Crisis Group recommendation for local conflict-resolution mechanisms."],
+    ["What happens if nobody responds?",
+      "Each level has a deadline for acknowledgement: 60, 30 or 10 minutes. If it passes, the case climbs a level and new responders are alerted. The demo shows a warning escalating to critical after 30 minutes."],
+    ["How do responders without internet use it?",
+      "They reply 'ACK C-001' by plain SMS. The system accepts it only from a registered number assigned to that case."],
+    ["Why the Agro Rangers?",
+      "The NSCDC Agro Rangers were set up to protect farms and mediate farmer/herder disputes, so they are the natural security responder at the top of the ladder, together with the LGA security council."],
+    ["Will herders accept being tracked?",
+      "Only if they benefit and trust the system. That is why the first person warned is the herder, with a safe route, why herd positions are never public, and why herder associations should co-govern the data. Collars should be voluntary. I list adoption as the biggest real-world risk."],
+    ["How does this relate to the Nigeria Data Protection Act 2023?",
+      "Phone numbers and herd locations are personal data. The design follows the Act's principles: collect only what is needed, encrypt it, restrict access by role, and keep an audit trail. A real deployment would also need a lawful basis, consent and a data protection impact assessment."],
+  ]],
+  ["Testing and limitations", [
+    ["How did you test it?",
+      "Thirty automated tests, a narrated demo, a live dashboard with a collar simulator, and a benchmark. The tests prove security properties: forged and replayed messages rejected, rumours kept private, informants unmasked only by the right role, and escalation working."],
+    ["How fast is it?",
+      "3.3 ms per signed GPS message including verification and geofencing, and 0.08 s to recompute all 2,010 risk cells. One laptop can handle thousands of collars reporting every ten minutes. Report rescoring slows as reports pile up (161 ms each with 200 in store), so a spatial index is future work."],
+    ["Your data is synthetic. How do you know it works?",
+      "I know the mechanisms work, because the tests prove them. I do not yet know how accurate the risk scores are in the real world, because that needs real incident data. The next step is a pilot in Guma LGA with calibration against ACLED."],
+  ]],
+];
+
+const RUNBOOK = [
+  "Before the panel: generate data (python demo/generate_data.py) and delete demo/sandbox.",
+  "Terminal 1: set AGROPEACE_MASTER_KEY and AGROPEACE_USSD_TOKEN, then python -m agropeace -c demo/demo_config.json run",
+  "Browser: http://127.0.0.1:8090. Show the public view: risk levels, no herds.",
+  "Sign in as coordinator / peace-coord-2026. Herds, cases and the security panel appear.",
+  "Terminal 2 (same variables): python demo/simulator.py. Point at H1's dashed forecast line.",
+  "When H1 gets its early warning, open sandbox/sms_outbox.jsonl or point at the new advisory case.",
+  "When H1 enters the farm, show the warning case, the reroute advice and the peace committee alert.",
+  "USSD panel: Dial, 1 (cattle on farm), choose Guma, Yelwata, 1 to send. Point at the trust score and its reasons.",
+  "Click Acknowledge, then Resolve with herd_rerouted. Point at the audit chain status.",
+  "Tip: open http://127.0.0.1:8090/#7.86,8.81,11.25 to jump straight to the Yelwata area.",
+  "If anything fails: python demo/run_demo.py --fast tells the same story in the terminal.",
+];
+
+const NUMBERS = [
+  "30 of 30 automated tests pass",
+  "Risk = 0.30 history + 0.30 herds near crops + 0.15 crops in field + 0.10 water stress + 0.15 reports",
+  "Levels: low < 0.20, elevated, high from 0.35, severe from 0.50",
+  "Trust: verified >= 0.70, probable >= 0.45; USSD base 0.40; +0.15 per independent reporter; +0.25 GPS confirmation",
+  "SLA: advisory 60 min, warning 30 min, critical 10 min",
+  "3.3 ms per GPS message; 0.08 s per full risk recompute; 2,010 cells of 0.025 degrees (about 2.8 km)",
+  "Replay window 120 s; 3 reports per hour per reporter",
+  "In the demo the early warning came 90 minutes before the herd entered the farm",
+  "ICG (2017): about 2,500 deaths in 2016; Benue open grazing law passed May 2017, in force November 2017",
+];
+
+buildDefense({ title: "AgroPeace: Defense Preparation", qa: QA, runbook: RUNBOOK, numbers: NUMBERS,
+  out: path.join(__dirname, "AgroPeace_Defense_QA.docx"), accent: "7A4A1F" });

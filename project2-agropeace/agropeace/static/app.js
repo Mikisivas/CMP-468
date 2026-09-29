@@ -36,6 +36,9 @@ async function loadLayers() {
     onEachFeature: (f, l) => l.bindPopup(`<b>${esc(f.properties.name)}</b><br>${esc(f.properties.kind.replace("_", " "))}${f.properties.crop ? " &middot; " + esc(f.properties.crop) : ""}`),
   }).addTo(gBase);
   map.fitBounds(L.geoJSON(gj, { filter: (f) => f.properties.kind !== "lga" }).getBounds(), { padding: [10, 10] });
+  // Optional bookmarkable view: /#7.86,8.83,11.5
+  const v = location.hash.slice(1).split(",").map(Number);
+  if (v.length === 3 && v.every(Number.isFinite)) map.setView([v[0], v[1]], v[2]);
   const sel = $("rComm");
   gj.features.filter((f) => f.properties.kind === "community")
     .forEach((f) => sel.insertAdjacentHTML("beforeend", `<option>${esc(f.properties.name)}</option>`));

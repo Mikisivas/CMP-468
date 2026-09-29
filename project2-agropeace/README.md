@@ -67,7 +67,7 @@ routes, river and risk grid still draw because Leaflet is bundled.
 ## Tests
 
 ```
-python -m pytest -q        # 29 tests
+python -m pytest -q        # 30 tests
 ```
 
 ## Layout
@@ -85,5 +85,5 @@ agropeace/engine.py     orchestration and USSD
 agropeace/server.py     web API and dashboard
 agropeace/static/       dashboard (Leaflet 1.9.4 bundled, BSD-2 licence)
 demo/                   data generator, collar simulator, narrated demo
-tests/                  29 automated tests
+tests/                  30 automated tests
 ```

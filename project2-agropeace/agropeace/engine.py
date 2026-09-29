@@ -341,7 +341,8 @@ class Engine:
         """Role-filtered state for the dashboard. The public sees coarse, verified information only."""
         with self.lock:
             precise = can(user, "view_precise")
-            herds = [h.public(precise) for h in self.tracker.herds.values() if h.lat is not None]
+            # The public never sees herds: a herd marked "inside a farm" on a public map invites reprisals.
+            herds = [h.public(precise) for h in self.tracker.herds.values() if h.lat is not None] if precise else []
             if precise and not can(user, "view_all_lgas"):
                 herds = [h for h in herds if sees_lga(user, self.layers.lga_of(h["lat"], h["lon"]))]
             reports = [self._report_view(r, user) for r in self.reports.reports

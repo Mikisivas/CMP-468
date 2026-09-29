@@ -61,7 +61,10 @@ def main():
 
     scene("2. Herd H1 (140 cattle) treks toward Yelwata farms. GPS collars report every 10 minutes")
     h1 = paths["COLLAR-01"]
+    entered = False
     for i, (lat, lon) in enumerate(h1):
+        if entered:
+            break
         clock.t += timedelta(minutes=10)
         for dev in ("COLLAR-01", "COLLAR-02"):
             p = paths[dev][min(i, len(paths[dev]) - 1)] if dev != "COLLAR-01" else (lat, lon)
@@ -72,6 +75,7 @@ def main():
                 print(f"  {clock.t:%H:%M} {h.herd_id}: {', '.join(r['events'])} "
                       f"(speed {h.speed_kmh:.1f} km/h, zone {h.zone})")
                 sent = show_sms(eng, sent)
+                entered = entered or "incursion" in r["events"]
     case = next(c for c in eng.cases.cases if c["key"] == "herd:H1")
     print(f"\n  Case {case['id']} [{case['level'].upper()}] {case['title']}")
     print(f"  Reroute: {case['reroute']['reserve']}, {case['reroute']['distance_km']} km {case['reroute']['direction']}")
@@ -79,11 +83,12 @@ def main():
     scene("3. Nobody acknowledges within 30 minutes: automatic escalation")
     clock.t += timedelta(minutes=35)
     eng.tick()
-    print(f"  Case {case['id']} is now {case['level'].upper()}")
+    print(f"  {clock.t:%H:%M} case {case['id']} is now {case['level'].upper()}")
     sent = show_sms(eng, sent)
 
     scene("4. Guma Peace Committee replies 'ACK' by plain SMS, then resolves the case")
-    print("  Reply:", eng.sms_inbound("+2348060000201", f"ACK {case['id']}"))
+    clock.t += timedelta(minutes=4)
+    print(f"  {clock.t:%H:%M} reply:", eng.sms_inbound("+2348060000201", f"ACK {case['id']}"))
     clock.t += timedelta(minutes=50)
     eng.resolve(case["id"], "guma_mediator", "herd_rerouted", "Herd moved back to route R2 with youth leaders present")
     print(f"  {case['id']} resolved: {case['outcome']}; acknowledged {case['response_min']:.0f} min after "
