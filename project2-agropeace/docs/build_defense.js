@@ -55,7 +55,7 @@ const QA = [
   ]],
   ["Response and the Nigerian context", [
     ["Who gets alerted, and in what order?",
-      "Advisory: the herder and the herder association. Warning: add the peace committee and farmers association. Critical: add the NSCDC Agro Rangers and LGA security council. Mediation comes before force, which follows the Crisis Group recommendation for local conflict-resolution mechanisms."],
+      "Advisory: the herder and the herder association. Warning: add the peace committee and farmers association. Critical: add the NSCDC Agro Rangers and LGA security council. Mediation comes before force, which matches the recommendation of Barango-Tariah and colleagues for conflict management committees that include both farmers and herders."],
     ["What happens if nobody responds?",
       "Each level has a deadline for acknowledgement: 60, 30 or 10 minutes. If it passes, the case climbs a level and new responders are alerted. The demo shows a warning escalating to critical after 30 minutes."],
     ["How do responders without internet use it?",
@@ -100,7 +100,7 @@ const NUMBERS = [
   "3.3 ms per GPS message; 0.08 s per full risk recompute; 2,010 cells of 0.025 degrees (about 2.8 km)",
   "Replay window 120 s; 3 reports per hour per reporter",
   "In the demo the early warning came 90 minutes before the herd entered the farm",
-  "ICG (2017): about 2,500 deaths in 2016; Benue open grazing law passed May 2017, in force November 2017",
+  "Musa et al. (2024): 47 incidents around Gbajimba and 40 around Ugba, 2015 to 2018 (ACLED); Njoku et al. (2023): 63% of Mid-Benue Trough conflicts occurred on cropland; Bappayo et al. (2026): WhatsApp 82% and Facebook 73% as misinformation channels",
 ];
 
 buildDefense({ title: "AgroPeace: Defense Preparation", qa: QA, runbook: RUNBOOK, numbers: NUMBERS,

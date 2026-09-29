@@ -40,13 +40,13 @@ const FOOT = "CMP 468 · AgroPeace";
   s = next();
   T.kicker(s, "The problem");
   T.title(s, "Hours separate a stray herd from a killing");
-  const st = [["~2,500", "people killed in farmer/herder violence in 2016 (International Crisis Group, 2017)", T.alert],
-    ["2017", "Benue bans open grazing, yet clashes over farms, water and routes continue", T.primary],
+  const st = [["47", "incidents around Gbajimba, Guma LGA, in 2015 to 2018, the highest in Guma and Logo (Musa et al., 2024)", T.alert],
+    ["2017", "Benue bans open grazing; the conflict escalated rather than calmed (Nwankwo, 2024a)", T.primary],
     ["Hours", "between crops being destroyed and a reprisal: long enough to act, if the right people know", T.green]];
   st.forEach(([v, l, c], i) => { const x = M + i * 4.1; T.card(s, x, 1.75, 3.8, 3.0); T.stat(s, v, l, x + 0.35, 1.95, 3.1, c); });
   txt(s, "The information to act early exists: herd movements, crop seasons, past incidents, community warnings. It is scattered, unverified and slow.", M, 5.1, W - 2 * M, 1.0, { fontSize: 18 });
   T.footer(s, FOOT, n);
-  s.addNotes("The Crisis Group estimated about 2,500 deaths in 2016 alone. Benue banned open grazing in 2017, but clashes continue. My key observation: most incidents take hours to escalate. That gap is the opportunity.");
+  s.addNotes("Mapping of ACLED records by Musa and colleagues in 2024 found 47 incidents around Gbajimba in Guma LGA between 2015 and 2018, the highest in Guma and Logo. Benue banned open grazing in 2017, but Nwankwo's 2024 study found the conflict escalated rather than calmed. My key observation: most incidents take hours to escalate. That gap is the opportunity.");
 
   // 3 Chain
   s = next();
@@ -163,7 +163,7 @@ const FOOT = "CMP 468 · AgroPeace";
   T.card(s, 6.0, 5.45, 6.7, 1.25, "FBEDEE");
   txt(s, "Below 0.45 = unverified: never broadcast, never public, never triggers security. A lone \"they are coming tonight\" stays quiet until someone else confirms it.", 6.25, 5.5, 6.25, 1.15, { fontSize: 15, valign: "middle" });
   T.footer(s, FOOT, n);
-  s.addNotes("USSD works on the cheapest phone without data, and rural Nigerians already use it for banking. Ushahidi in Kenya showed crowdsourcing works, but anyone can report anything. So every report gets a trust score. The key rule: unverified reports are never broadcast. That is how the system avoids becoming a rumour amplifier.");
+  s.addNotes("USSD works on the cheapest phone without data, and rural Nigerians already use it for banking. Crowdsourced reporting is fast, but anyone can report anything, and a 2026 Bauchi study found WhatsApp and Facebook were the main channels for farmer-herder misinformation. So every report gets a trust score. The key rule: unverified reports are never broadcast. That is how the system avoids becoming a rumour amplifier.");
 
   // 10 Escalation
   s = next();

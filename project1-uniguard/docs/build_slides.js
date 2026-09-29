@@ -45,7 +45,7 @@ const FOOT = "CMP 468 · UniGuard";
   T.kicker(s, "The problem");
   T.title(s, "Campus records can vanish in minutes");
   const stats = [
-    ["12", "national grid collapses in 2024 (Guardian Nigeria). Each cut can corrupt a file mid-write.", T.amber],
+    ["39%", "of surveyed staff at Nigerian tertiary institutions face 4 to 6 hours of power outage daily (Ibrahim et al., 2026)", T.amber],
     ["72 hrs", "to report a personal data breach to the NDPC under the Nigeria Data Protection Act 2023, s.40", T.primary],
     ["1 drive", "is all many departments use for backup, and it sits beside the server ransomware attacks", T.alert],
   ];
@@ -57,7 +57,7 @@ const FOOT = "CMP 468 · UniGuard";
   T.body(s, "Admissions (CAPS), fees (Remita), course registration, results and transcripts now all run on campus servers. Most have no monitoring, no tested restore, and no record of who changed what.",
     M, 5.0, W - 2 * M, 1.2, { fontSize: 18 });
   T.footer(s, FOOT, n);
-  s.addNotes("Three numbers frame the problem. The grid collapsed twelve times in 2024, so power cuts are routine. The Data Protection Act gives us 72 hours to report a breach, so we must know quickly. And many departments back up to one drive kept next to the server, which ransomware encrypts along with everything else.");
+  s.addNotes("Three numbers frame the problem. In a 2026 survey across Nigerian universities, polytechnics and research institutes, 39 percent of respondents faced 4 to 6 hours of power outage every day, so abrupt power cuts are routine. The Data Protection Act gives us 72 hours to report a breach, so we must know quickly. And many departments back up to one drive kept next to the server, which ransomware encrypts along with everything else.");
 
   // 3. Five threats
   s = next();
@@ -169,7 +169,7 @@ const FOOT = "CMP 468 · UniGuard";
   s.addText("50+ points = critical. No single signal is enough, so a lecturer replacing many handouts gets a warning, not a lockdown.", {
     x: M + 0.3, y: 5.9, w: W - 2 * M - 0.6, h: 0.8, fontFace: T.fBody, fontSize: 16, color: T.ink, margin: 0, isTextBox: true, valign: "middle" });
   T.footer(s, FOOT, n);
-  s.addNotes("The idea comes from research on CryptoDrop by Scaife and others in 2016: ransomware makes files look random, so their Shannon entropy jumps close to 8 bits per byte. I combine four signals. It needs two or more to go critical, which keeps false alarms down. Compressed formats like PDF and DOCX are excluded from the entropy signal.");
+  s.addNotes("Recent studies, such as Lee and colleagues in 2023 and Davies and colleagues in 2022, detect ransomware from file entropy: encrypted files look random, so their Shannon entropy jumps close to 8 bits per byte. Bang and colleagues showed in 2024 that attackers can disguise entropy, which is why I never rely on entropy alone. I combine four signals. It needs two or more to go critical, which keeps false alarms down. Compressed formats like PDF and DOCX are excluded from the entropy signal.");
 
   // 9. Automatic response
   s = next();

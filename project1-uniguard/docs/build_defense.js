@@ -8,7 +8,7 @@ const QA = [
     ["Why did you choose this design over just buying a commercial backup product?",
       "Cost and fit. Commercial suites charge per server or per terabyte each year and assume steady power and fast internet. UniGuard is free, runs on an old PC, reacts to power cuts, sends offsite copies at night under a data cap, and protects result files specifically."],
     ["Which part of the course outline does this cover?",
-      "All ten topics. The CIA triad drives the design. The threat model covers intrusion, breaches, vulnerabilities and classes of attack. Controls cover defence methods. AES-GCM, scrypt and HKDF cover encryption and decryption. The SQLite audit log covers database security. Service checks and dashboard hardening cover network security. ISO 27001, NIST SP 800-34 and 800-61, and NDPA 2023 cover policies and standards. Table 4.5 in the report maps each one."],
+      "All ten topics. The CIA triad drives the design. The threat model covers intrusion, breaches, vulnerabilities and classes of attack. Controls cover defence methods. AES-GCM, scrypt and HKDF cover encryption and decryption. The SQLite audit log covers database security. Service checks and dashboard hardening cover network security. ISO/IEC 27001:2022, NIST CSF 2.0, NIST SP 800-61 Rev. 3, NDPA 2023 and the Cybercrimes (Amendment) Act 2024 cover policies and standards. Table 4.5 in the report maps each one."],
   ]],
   ["Encryption and keys", [
     ["Why AES-256-GCM and not AES-CBC?",
@@ -103,7 +103,7 @@ const NUMBERS = [
   "Ransomware on 600 files: recovered and verified in 2.7 s",
   "Ransomware score: mass change 40, entropy 30, extension 20, note 20; critical at 50",
   "scrypt N = 2^15, r = 8, p = 1; AES-256-GCM with 96-bit random nonce; 1 MiB chunks",
-  "12 national grid collapses in 2024; NDPA 2023 s.39 security, s.40 breach report in 72 hours",
+  "39% of respondents in Nigerian tertiary institutions face 4 to 6 hours of power outage daily (Ibrahim et al., 2026); NDPA 2023 s.39 security, s.40 breach report in 72 hours; Cybercrimes (Amendment) Act 2024: report attacks to the national CERT within 72 hours",
 ];
 
 buildDefense({ title: "UniGuard: Defense Preparation", qa: QA, runbook: RUNBOOK, numbers: NUMBERS,
