@@ -266,7 +266,7 @@ const FOOT = "CMP 468 · UniGuard";
   T.kicker(s, "Live demonstration", "9FC7B2");
   T.title(s, "Let me show you", { color: T.white });
   const demo = ["NEPA takes light: power card turns amber, emergency backup, SMS",
-    "Student Portal goes down: critical alert within 3 seconds",
+    "Student Portal goes down: critical alert within seconds",
     "Insider changes a CMP468 grade: red records banner",
     "Ransomware scrambles the file server: watch it recover itself",
     "Verify backups and check the audit chain"];
@@ -278,7 +278,7 @@ const FOOT = "CMP 468 · UniGuard";
   });
   s.addText("Backup plan if the projector laptop misbehaves:  python demo/run_demo.py", {
     x: M, y: 6.6, w: 12, h: 0.4, fontFace: T.fBody, fontSize: 13, italic: true, color: "9FC7B2", margin: 0, isTextBox: true });
-  s.addNotes("Switch to the terminal and browser now. Terminal 1 runs the dashboard, terminal 2 the fake portal, terminal 3 the incident simulator. Run: simulate_incident.py power-off, then Ctrl+C the portal, then tamper, then ransomware. If anything fails, run demo/run_demo.py --fast which tells the same story in the terminal.");
+  s.addNotes("Switch to the terminal and browser now. Window 1 runs python demo/live.py --fresh, which starts the dashboard and the stand-in portal. Window 2 runs the incident simulator: power-off, power-on, portal-down, portal-up, tamper, then ransomware. If anything fails, run demo/run_demo.py --fast which tells the same story in the terminal.");
 
   // 15. Limitations
   s = next();

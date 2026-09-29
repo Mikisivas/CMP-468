@@ -248,7 +248,7 @@ const FOOT = "CMP 468 · AgroPeace";
     txt(s, t, M + 0.9, y, 11, 0.6, { fontSize: 20, color: T.white, valign: "middle" });
   });
   txt(s, "Backup plan if the laptop misbehaves:  python demo/run_demo.py", M, 6.6, 12, 0.4, { fontSize: 13, italic: true, color: "C9B59C" });
-  s.addNotes("Terminal 1: python -m agropeace -c demo/demo_config.json run. Browser: 127.0.0.1:8090. Show public view, sign in as coordinator. Terminal 2: python demo/simulator.py. Use the USSD panel: dial, 1, choose Guma, Yelwata, 1 to send. If anything fails, run demo/run_demo.py --fast.");
+  s.addNotes("Window 1: python demo/live.py --fresh opens the dashboard at 127.0.0.1:8090. Show the public view, then sign in as coordinator. Window 2: python demo/simulator.py. Use the USSD panel: dial, 1, 2 for Guma, 1 for Yelwata, 1 to send. If anything fails, run demo/run_demo.py --fast.");
 
   // 16 Limitations
   s = next();

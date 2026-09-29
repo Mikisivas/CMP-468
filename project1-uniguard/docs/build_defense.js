@@ -85,15 +85,13 @@ const QA = [
 ];
 
 const RUNBOOK = [
-  "Before the panel: open three terminals in the project1-uniguard folder and delete demo/sandbox.",
-  "Terminal 1: python demo/seed_data.py, set UNIGUARD_PASSPHRASE and UNIGUARD_DASHBOARD_PASSWORD, run init, then run --dashboard.",
-  "Terminal 2: python demo/fake_portal.py",
-  "Browser: http://127.0.0.1:8080, log in with the dashboard password. Zoom to 125% for the projector.",
+  "Before the panel: open two command windows in the project1-uniguard folder and activate .venv in both (see SETUP_GUIDE).",
+  "Window 1: python demo/live.py --fresh. The browser opens http://127.0.0.1:8080. Log in with cmp468. Zoom to 125% for the projector.",
   "Scene 1: python demo/simulate_incident.py power-off. Point at the amber ON BATTERY card and the new power-loss snapshot.",
-  "Scene 2: python demo/simulate_incident.py power-on. Then press Ctrl+C in terminal 2. Point at Student Portal DOWN.",
+  "Scene 2: python demo/simulate_incident.py power-on, then portal-down. Point at Student Portal DOWN (HTTP 503). Then portal-up.",
   "Scene 3: python demo/simulate_incident.py tamper. Point at the red RECORDS ALERT banner.",
   "Scene 4: python demo/simulate_incident.py ransomware. Point at the incident row: restored, quarantined, recovery time.",
-  "Scene 5: click Verify backups. Then in terminal 3: python -m uniguard -c demo/demo_config.json audit",
+  "Scene 5: click Verify backups. Then set UNIGUARD_PASSPHRASE in window 2 and run python -m uniguard -c demo/demo_config.json audit",
   "If anything fails: python demo/run_demo.py --fast tells the same story in the terminal.",
 ];
 

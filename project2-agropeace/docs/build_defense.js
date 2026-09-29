@@ -78,14 +78,12 @@ const QA = [
 ];
 
 const RUNBOOK = [
-  "Before the panel: generate data (python demo/generate_data.py) and delete demo/sandbox.",
-  "Terminal 1: set AGROPEACE_MASTER_KEY and AGROPEACE_USSD_TOKEN, then python -m agropeace -c demo/demo_config.json run",
-  "Browser: http://127.0.0.1:8090. Show the public view: risk levels, no herds.",
+  "Before the panel: open two command windows in the project2-agropeace folder and activate .venv in both (see SETUP_GUIDE).",
+  "Window 1: python demo/live.py --fresh. The browser opens http://127.0.0.1:8090. Show the public view: risk levels, no herds.",
   "Sign in as coordinator / peace-coord-2026. Herds, cases and the security panel appear.",
-  "Terminal 2 (same variables): python demo/simulator.py. Point at H1's dashed forecast line.",
-  "When H1 gets its early warning, open sandbox/sms_outbox.jsonl or point at the new advisory case.",
-  "When H1 enters the farm, show the warning case, the reroute advice and the peace committee alert.",
-  "USSD panel: Dial, 1 (cattle on farm), choose Guma, Yelwata, 1 to send. Point at the trust score and its reasons.",
+  "Window 2: python demo/simulator.py (or --fast). Point at H1's dashed forecast line.",
+  "When H1 gets its early warning, point at the new advisory case; when it enters the farm, at the warning case, the reroute advice and the peace committee alert.",
+  "USSD panel: Dial, then 1 (cattle on farm), 2 (Guma), 1 (Yelwata), 1 (send). Point at the trust score and its reasons.",
   "Click Acknowledge, then Resolve with herd_rerouted. Point at the audit chain status.",
   "Tip: open http://127.0.0.1:8090/#7.86,8.81,11.25 to jump straight to the Yelwata area.",
   "If anything fails: python demo/run_demo.py --fast tells the same story in the terminal.",
